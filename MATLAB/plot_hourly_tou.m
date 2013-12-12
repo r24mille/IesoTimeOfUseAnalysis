@@ -9,10 +9,6 @@ function plot_hourly_tou( start_year, end_year, season )
 %   season - String of time-of-use season must match 'summer' or 'winter'
 %%
 
-% Grab database credentials
-schema = 'ontario';
-[host, port, username, password] = db_cred(schema);
-
 %%
 % Prep some settings for the query and plot;
 line_colors = colormap(lines(end_year - start_year + 1));
