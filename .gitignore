@@ -1,6 +1,7 @@
 # Created by http://gitignore.io
 db_cred.m
 db-config.xml
+*.jar # Don't commit referenced libraries
 
 ### Eclipse ###
 *.pydevproject
