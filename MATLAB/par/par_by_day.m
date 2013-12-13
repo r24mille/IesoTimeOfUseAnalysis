@@ -1,4 +1,4 @@
-function [ daily_pars ] = par_by_day( start_datetime, end_datetime )
+function [ daily_par_ts ] = par_by_day( start_datetime, end_datetime )
 %PAR_BY_DAY Finds the daily peak-to-average ratio (PAR) for a timeseries.
 %   Returns the daily peak-to-average ratio (PAR) of a timeseries. Also
 %   known as "crest factor."
@@ -8,8 +8,7 @@ function [ daily_pars ] = par_by_day( start_datetime, end_datetime )
 %   end_datetime, String in the format of %y-%m-%d %T.
 %
 %   Returns:
-%   daily_pars, nx2 matrix where first column is datenum and the second 
-%               column is the PAR for that datenum.
+%   daily_pars_ts, Timeseries object of daily PAR values.
 
 %%
 % Query database
@@ -23,17 +22,23 @@ for i = 0:(num_days - 1)
     starttime = addtodate(datenum(reading_ts.TimeInfo.StartDate), i, 'day');
     endtime = addtodate(starttime, 86399, 'second'); % 1 day - 1 second
     daily_ts = getsampleusingtime(reading_ts, starttime, endtime);
-    daily_ts_vec = daily_ts.Data;
-    par = abs(max(daily_ts_vec)) / rms(daily_ts_vec);
+    par = abs(max(daily_ts.Data)) / rms(daily_ts.Data);
+    clear daily_ts;
     
     % Place results in matrix, skip outliers (eg. Blackout ~Aug 14, 2003)
     if par < 1.28
-        daily_pars(i+1, 1) = starttime;
-        daily_pars(i+1, 2) = par;
+        daily_pars(i+1, 1) = par;
+        daily_pars(i+1, 2) = starttime;
+    else
+        disp(['Outlier PAR=', num2str(par), ' on ', datestr(starttime), '.'])
     end
 end
 
 % Remove rows left as zeros, which were outliers
 daily_pars(all(daily_pars==0,2),:) = [];
+
+% Translate matrix to timeseries
+daily_par_ts = timeseries(daily_pars(:,1), datestr(daily_pars(:,2)), ...
+    'Name', 'Daily PAR');
 end
 

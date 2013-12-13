@@ -6,28 +6,29 @@ function plot_daily_par( start_datetime, end_datetime )
 
 %%
 % Retrieve matrix of datenums and PAR values
-daily_pars = par_by_day(start_datetime, end_datetime);
+daily_par_ts = par_by_day(start_datetime, end_datetime);
 
 %%
 % Plot the results
 hold on;
 title('Change in Daily PAR Over Time', 'FontWeight', 'bold');
 ylabel('Peak-to-Average Ratio (PAR)');
-xlabel('Day of Year');
+xlabel('Date');
 
-plot(daily_pars(:,1), daily_pars(:,2), ...
-    'Color', 'b');
+plot((datenum(daily_par_ts.TimeInfo.StartDate) + daily_par_ts.Time), ...
+    daily_par_ts.Data, 'Color', 'b');
 datetick('x');
 
 % Find x values for plotting the fit based on xlim
-lin_xplot = linspace(min(daily_pars(:,1)), max(daily_pars(:,1)));
+axesLimits = xlim(gca);
+xplot = linspace(axesLimits(1), axesLimits(2));
 
-fit_res = polyfit(daily_pars(:,1), daily_pars(:,2), 1);
+fitResults = polyfit((datenum(daily_par_ts.TimeInfo.StartDate) + daily_par_ts.Time), ...
+    daily_par_ts.Data, 1);
 % Evaluate polynomial
-lin_yplot = polyval(fit_res, lin_xplot);
+yplot = polyval(fitResults, xplot);
 % Plot the fit
-plot(lin_xplot, lin_yplot, ...
-    'Color', 'r');
+plot(xplot, yplot, 'Color', 'r');
 
 % Build legend
 legend('Peak-to-Average Ratio', 'Linear Trend');
