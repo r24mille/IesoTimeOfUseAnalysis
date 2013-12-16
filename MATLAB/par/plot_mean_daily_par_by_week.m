@@ -12,16 +12,17 @@ mean_daily_par_by_week_ts = mean_daily_par_by_week(daily_par_ts);
 
 %%
 % Plot the results
+figure('Name', 'Mean Daily PAR by Week');
 hold on;
-title('Mean Daily PAR by Week', 'FontWeight', 'bold');
-ylabel('Mean Peak-to-Average Ratio (PAR)');
-xlabel('Date Grouped by Week');
-
-x_datenums = (datenum(mean_daily_par_by_week_ts.TimeInfo.StartDate) + mean_daily_par_by_week_ts.Time);
 mean_daily_par_axes = gca;
-mean_daily_par_plot = plot(x_datenums, mean_daily_par_by_week_ts.Data, ...
+title(mean_daily_par_axes, 'Mean Daily PAR by Week', 'FontWeight', 'bold');
+ylabel(mean_daily_par_axes, 'Mean Peak-to-Average Ratio (PAR)');
+xlabel(mean_daily_par_axes, 'Date Grouped by Week');
+
+x_datenums = datenum(mean_daily_par_by_week_ts.TimeInfo.StartDate) + mean_daily_par_by_week_ts.Time;
+mean_daily_par_plot = plot(mean_daily_par_axes, x_datenums, mean_daily_par_by_week_ts.Data, ...
     'Color', 'b');
-datetick('x');
+datetick(mean_daily_par_axes, 'x');
 
 % Find x values for plotting the fit based on xlim
 axesLimits = xlim(mean_daily_par_axes);
@@ -44,7 +45,7 @@ resid = mean_daily_par_by_week_ts.Data - Yfit(:);
 fitLine = plot(mean_daily_par_axes, linear_xplot, yplot, ...
     'Color','r');
 % Create legend
-legend(mean_daily_par_axes, 'Mean Daily PAR', 'Linear Fit');
+legend(mean_daily_par_axes, 'Mean Daily PAR', 'Linear Trend');
 
 % Set new line in proper position
 % Get the axes children

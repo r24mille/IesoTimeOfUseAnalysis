@@ -11,28 +11,29 @@ daily_par_ts = par_by_day(demand_ts);
 
 %%
 % Plot the results
+figure('Name', 'Daily Peak-to-Average Ratio');
 hold on;
-title('Change in Daily PAR Over Time', 'FontWeight', 'bold');
-ylabel('Peak-to-Average Ratio (PAR)');
-xlabel('Date');
+dail_par_axes = gca;
+title(dail_par_axes, 'Daily Peak-to-Average Ratio', 'FontWeight', 'bold');
+ylabel(dail_par_axes, 'Peak-to-Average Ratio (PAR)');
+xlabel(dail_par_axes, 'Date');
 
-plot((datenum(daily_par_ts.TimeInfo.StartDate) + daily_par_ts.Time), ...
-    daily_par_ts.Data, 'Color', 'b');
-datetick('x');
+x_datenums = datenum(daily_par_ts.TimeInfo.StartDate) + daily_par_ts.Time;
+plot(dail_par_axes, x_datenums, daily_par_ts.Data, 'Color', 'b');
+datetick(dail_par_axes, 'x');
 
 % Find x values for plotting the fit based on xlim
-axesLimits = xlim(gca);
+axesLimits = xlim(dail_par_axes);
 xplot = linspace(axesLimits(1), axesLimits(2));
 
-fitResults = polyfit((datenum(daily_par_ts.TimeInfo.StartDate) + daily_par_ts.Time), ...
-    daily_par_ts.Data, 1);
+fitResults = polyfit(x_datenums, daily_par_ts.Data, 1);
 % Evaluate polynomial
 yplot = polyval(fitResults, xplot);
 % Plot the fit
-plot(xplot, yplot, 'Color', 'r');
+plot(dail_par_axes, xplot, yplot, 'Color', 'r');
 
 % Build legend
-legend('Peak-to-Average Ratio', 'Linear Trend');
+legend(dail_par_axes, 'Peak-to-Average Ratio', 'Linear Trend');
 hold off;
 end
 

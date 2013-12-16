@@ -13,5 +13,6 @@ addpath('config', 'data-access', 'lib', 'par');
 % Uncomment lines below to see evolution of peak-to-average ratio over time
 % range.
 start_datetime = '2002-05-01 00:00:00';
-end_datetime = '2012-02-09 23:59:59';
-%plot_daily_par(demand_ts);
+end_datetime = '2011-04-30 23:59:59';
+plot_daily_par(start_datetime, end_datetime);
+plot_mean_daily_par_by_week(start_datetime, end_datetime);
