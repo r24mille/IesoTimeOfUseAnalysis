@@ -1,6 +1,6 @@
-function [ reading_timeseries ] = ieso_query_readings(...
+function [ demand_timeseries ] = ieso_query_demand(...
      start_datetime, end_datetime )
-%IESO_QUERY_READINGS Query for IESO demand readings in a time range
+%IESO_QUERY_DEMAND Query for IESO hourly demand in a time range.
 %   Parameters:
 %   start_datetime, String in the format of %y-%m-%d %T. 
 %   end_datetime, String in the format of %y-%m-%d %T.
@@ -43,8 +43,8 @@ close(conn)
 clear curs conn;
 
 %Append data to output variable
-reading_timeseries = timeseries(cell2mat(sql_results(:,1)), sql_results(:,2), ...
+demand_timeseries = timeseries(cell2mat(sql_results(:,1)), sql_results(:,2), ...
     'Name', 'Ontario Demand');
-reading_timeseries.DataInfo.Units = 'MW';
+demand_timeseries.DataInfo.Units = 'MW';
 
 end

@@ -14,4 +14,5 @@ addpath('config', 'data-access', 'lib', 'par');
 % range.
 start_datetime = '2002-05-01 00:00:00';
 end_datetime = '2012-02-09 23:59:59';
-%plot_daily_par(start_datetime, end_datetime);
+demand_ts = ieso_query_demand(start_datetime, end_datetime);
+%plot_daily_par(demand_ts);

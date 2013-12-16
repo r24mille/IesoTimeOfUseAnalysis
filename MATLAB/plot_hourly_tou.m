@@ -22,7 +22,7 @@ if strcmp(season, 'summer') == 1
     figure_title = 'Mean Daily Load Curve During Summer (May 1 - Sep 30)';
 elseif strcmp(season, 'winter') == 1
     % Labels for a two years are a bit more complicated
-    legend_labels = cell(end_year-start_year,1)
+    legend_labels = cell(end_year-start_year,1);
     for i=start_year:end_year
         from_str = num2str(i);
         from_str = from_str(3:4);
@@ -48,12 +48,12 @@ for i = start_year:end_year
         start_datetime = strcat(num2str(i), start_month_part, ' 00:00:00');
         end_datetime = strcat(num2str(i+1), end_month_part, ' 23:59:59');
     end
-    reading_ts = ieso_query_readings(start_datetime, end_datetime, ...
+    demand_ts = ieso_query_demand(start_datetime, end_datetime, ...
         schema, username, password, host, port);
 
     % Find mean consumption by hour
-    mean_readings = mean_by_hour(reading_ts);
-    clear reading_ts;
+    mean_readings = mean_by_hour(demand_ts);
+    clear demand_ts;
     plot(xrng, mean_readings, ...
         'Color', line_colors((i - start_year + 1),:), ...
         'LineWidth', 2);

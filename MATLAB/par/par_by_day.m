@@ -1,27 +1,22 @@
-function [ daily_par_ts ] = par_by_day( start_datetime, end_datetime )
+function [ daily_par_ts ] = par_by_day( demand_ts )
 %PAR_BY_DAY Finds the daily peak-to-average ratio (PAR) for a timeseries.
 %   Returns the daily peak-to-average ratio (PAR) of a timeseries. Also
 %   known as "crest factor."
 %
 %   Parameters:
-%   start_datetime, String in the format of %y-%m-%d %T. 
-%   end_datetime, String in the format of %y-%m-%d %T.
+%   demand_ts, Timeseries object of hourly demand.
 %
 %   Returns:
 %   daily_pars_ts, Timeseries object of daily PAR values.
 
 %%
-% Query database
-reading_ts = ieso_query_readings(start_datetime, end_datetime);
-
-%%
 % Loop over days in timeseries
-num_days = ceil(reading_ts.TimeInfo.End - reading_ts.TimeInfo.Start);
+num_days = ceil(demand_ts.TimeInfo.End - demand_ts.TimeInfo.Start);
 daily_pars = zeros(num_days, 2);
 for i = 0:(num_days - 1)
-    starttime = addtodate(datenum(reading_ts.TimeInfo.StartDate), i, 'day');
+    starttime = addtodate(datenum(demand_ts.TimeInfo.StartDate), i, 'day');
     endtime = addtodate(starttime, 86399, 'second'); % 1 day - 1 second
-    daily_ts = getsampleusingtime(reading_ts, starttime, endtime);
+    daily_ts = getsampleusingtime(demand_ts, starttime, endtime);
     par = abs(max(daily_ts.Data)) / rms(daily_ts.Data);
     clear daily_ts;
     
