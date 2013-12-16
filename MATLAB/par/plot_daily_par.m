@@ -6,7 +6,8 @@ function plot_daily_par( start_datetime, end_datetime )
 
 %%
 % Retrieve matrix of datenums and PAR values
-daily_par_ts = par_by_day(start_datetime, end_datetime);
+demand_ts = ieso_query_demand(start_datetime, end_datetime);
+daily_par_ts = par_by_day(demand_ts);
 
 %%
 % Plot the results
