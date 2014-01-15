@@ -1,5 +1,5 @@
-function plot_daily_par( daily_par_ts, plot_title )
-%PLOT_DAILY_PAR Plots the daily peak-to-average ratio for a time range
+function plot_max_pars( daily_par_ts, plot_title )
+%PLOT_MAX_PARS Plots the daily peak-to-average ratio for a time range
 %   Parameters:
 %   start_datetime, String in the format of %y-%m-%d %T. 
 %   end_datetime, String in the format of %y-%m-%d %T.
@@ -13,7 +13,7 @@ ylabel(dail_par_axes, 'Peak-to-Average Ratio (PAR)');
 xlabel(dail_par_axes, 'Date');
 
 x_datenums = datenum(daily_par_ts.TimeInfo.StartDate) + daily_par_ts.Time;
-plot(dail_par_axes, x_datenums, daily_par_ts.Data, 'Color', 'b');
+scatter(x_datenums, daily_par_ts.Data, '*');
 datetick(dail_par_axes, 'x');
 
 % Find x values for plotting the fit based on xlim
