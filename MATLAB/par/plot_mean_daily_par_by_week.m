@@ -1,21 +1,12 @@
-function plot_mean_daily_par_by_week( start_datetime, end_datetime )
+function plot_mean_daily_par_by_week( mean_daily_par_by_week_ts, plot_title )
 %PLOT_DAILY_PAR Plots the mean daily PAR by week for a time range.
-%   Parameters:
-%   start_datetime, String in the format of %y-%m-%d %T. 
-%   end_datetime, String in the format of %y-%m-%d %T.
-
-%%
-% Retrieve matrix of datenums and PAR values
-demand_ts = ieso_query_demand(start_datetime, end_datetime);
-daily_par_ts = par_by_day(demand_ts);
-mean_daily_par_by_week_ts = mean_daily_par_by_week(daily_par_ts);
 
 %%
 % Plot the results
-figure('Name', 'Mean Daily PAR by Week');
+figure('Name', plot_title);
 hold on;
 mean_daily_par_axes = gca;
-title(mean_daily_par_axes, 'Mean Daily PAR by Week', 'FontWeight', 'bold');
+title(mean_daily_par_axes, plot_title, 'FontWeight', 'bold');
 ylabel(mean_daily_par_axes, 'Mean Peak-to-Average Ratio (PAR)');
 xlabel(mean_daily_par_axes, 'Date Grouped by Week');
 
