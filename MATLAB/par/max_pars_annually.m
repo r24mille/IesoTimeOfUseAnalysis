@@ -25,9 +25,9 @@ num_years = end_year + 1 - start_year;
 % If annual cycle is by TOU season, end the outer for loop one iteration
 % earlier since TOU season is May of current year into April of next year.
 if strcmp(annual_def, 'tou_season')
-    outer_loop_end = (num_years - 2)
+    outer_loop_end = (num_years - 2);
 else
-    outer_loop_end = (num_years - 1)
+    outer_loop_end = (num_years - 1);
 end
 
 for i = 0:outer_loop_end
