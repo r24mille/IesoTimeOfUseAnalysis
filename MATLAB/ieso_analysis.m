@@ -27,10 +27,10 @@ plot_mean_daily_par_by_week(mean_daily_par_by_week_ts, plot_title);
 start_datetime = '2003-05-01 00:00:00';
 end_datetime = '2013-04-30 23:59:59';
 demand_ts = ieso_query_demand(start_datetime, end_datetime);
-par_ts = par_by_weekend_holiday(demand_ts);
+par_ts = par_by_sunday_holiday(demand_ts);
 
 % Plot results
-plot_title = 'Daily Peak-to-Average Ratio (Weekends & Holidays)';
+plot_title = 'Daily Peak-to-Average Ratio (Sundays & Holidays)';
 plot_daily_par(par_ts, plot_title);
 
 %%
