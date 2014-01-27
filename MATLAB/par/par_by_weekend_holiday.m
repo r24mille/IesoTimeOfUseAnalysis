@@ -8,8 +8,8 @@ function [ weekend_holiday_par_ts ] = par_by_weekend_holiday( demand_ts )
 %   demand_ts, Timeseries object of hourly demand.
 %
 %   Returns:
-%   weekday_par_ts, Timeseries object of daily PAR values for non-holiday 
-%                  weekdays.
+%   weekend_holiday_par_ts, Timeseries object of daily PAR values for
+%   weekends and holidays.
 
 %%
 % Find Ontario holidays for date range of timeseries
