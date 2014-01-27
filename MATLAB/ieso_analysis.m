@@ -27,10 +27,10 @@ plot_mean_daily_par_by_week(mean_daily_par_by_week_ts, plot_title);
 start_datetime = '2003-05-01 00:00:00';
 end_datetime = '2013-04-30 23:59:59';
 demand_ts = ieso_query_demand(start_datetime, end_datetime);
-par_ts = par_by_sunday_holiday(demand_ts);
+par_ts = par_by_weekend_holiday(demand_ts);
 
 % Plot results
-plot_title = 'Daily Peak-to-Average Ratio (Sundays & Holidays)';
+plot_title = 'Daily Peak-to-Average Ratio (Weekends & Holidays)';
 plot_daily_par(par_ts, plot_title);
 
 %%
@@ -38,7 +38,7 @@ plot_daily_par(par_ts, plot_title);
 start_datetime = '2003-05-01 00:00:00';
 end_datetime = '2013-04-30 23:59:59';
 demand_ts = ieso_query_demand(start_datetime, end_datetime);
-par_ts = par_by_day(demand_ts);
+par_ts = par_by_sunday_holiday(demand_ts);
 
 % Trim timeseries to only have top 10 PAR values annually
 num_max = 10;
@@ -46,7 +46,7 @@ annual_def = 'tou_season';
 max_pars_ts = max_pars_annually(par_ts, num_max, annual_def);
 
 % Plot results
-plot_title = ['Top ', num2str(num_max), ' Peak-to-Average Ratios Annually'];
+plot_title = ['Top ', num2str(num_max), ' Peak-to-Average Ratios Annually (Sundays & Weekends)'];
 plot_max_pars(max_pars_ts, plot_title);
 
 
