@@ -95,7 +95,7 @@ for year=2004:2013
     ninetieth_pct_yvals = [ninetieth_pct_start_pnt ninetieth_pct_points(2) ninetieth_pct_points(4) ninetieth_pct_end_pnt];
 
     % Create figure
-    plot_title = ['Temperature Demand in Toronto Zone (', num2str(year), ')'];
+    plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (', num2str(year), ')'];
     figure('Name', plot_title);
     hold on;
 
