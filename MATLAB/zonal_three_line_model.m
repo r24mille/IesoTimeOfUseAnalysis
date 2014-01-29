@@ -2,46 +2,123 @@
 % Add folders to path.
 addpath('config', 'data-access', 'lib', 'three-line');
 
-%%
-% Set start/end and details about location to get demand and temperature
-% timeseries.
-start_datetime = '2004-01-01 00:00:00';
-end_datetime = '2004-12-31 23:59:59';
-zone_col = 'toronto'; % Zone column name
-location_id = 1; % Toronto
-[ demand_ts, temperature_ts ] = ieso_query_zonal_demand_temp(... 
-    zone_col, location_id, start_datetime, end_datetime);
+for year=2004:2013
+    %%
+    % Set start/end and details about location to get demand and temperature
+    % timeseries.
+    start_datetime = strcat(num2str(year), '-01-01 00:00:00');
+    end_datetime = strcat(num2str(year), '-12-31 23:59:59');
+    zone_col = 'toronto'; % Zone column name
+    location_id = 1; % Toronto
+    [ demand_ts, temperature_ts ] = ieso_query_zonal_demand_temp(... 
+        zone_col, location_id, start_datetime, end_datetime);
 
-%%
-% Build energy/temperature vectors only for those days with 24-hours in a
-% day.
-datenum_index = datenum(demand_ts.TimeInfo.StartDate)
-datenum_ts_end = addtodate(datenum_index, 1, 'year')
-while datenum_index < datenum_ts_end
-    daily_end = addtodate(datenum_index, 86399, 'second') % 1 day - 1 second
-    daily_demand_ts = getsampleusingtime(demand_ts, datenum_index, daily_end);
-    daily_demand_ts.Data.length
-    daily_temp_ts = getsampleusingtime(temperature_ts, datenum_index, daily_end);
-    daily_temp_ts.Data.length
-    
-    datenum_index = addtodate(datenum_index, 1, 'day');
-end
+    %%
+    % Build energy/temperature vectors only for those days with 24-hours in a
+    % day.
+    pristine_demand_data = [];
+    pristine_temperature_data = [];
+    datenum_index = datenum(demand_ts.TimeInfo.StartDate);
+    datenum_ts_end = addtodate(datenum_index, 1, 'year');
+    while datenum_index < datenum_ts_end
+        daily_end = addtodate(datenum_index, 86399, 'second'); % 1 day - 1 second
+        daily_demand_ts = getsampleusingtime(demand_ts, datenum_index, daily_end);
 
-%%
-% Parse data with the three-line model
-X = [demand_ts.Data'; temperature_ts.Data'];
+        if length(daily_demand_ts.Data) ~= 24
+            % disp([datestr(datenum_index), ' demand ts length ', num2str(length(daily_demand_ts.Data))])
+        else
+            pristine_demand_data = [pristine_demand_data daily_demand_ts.Data'];
+        end
 
-[point1,slope1] = threel(X,10);
-[point2,slope2] = threel(X,90);
+        daily_temp_ts = getsampleusingtime(temperature_ts, datenum_index, daily_end);
 
-baseload = min(point1(2),point1(4))
-actload = min(point2(2),point2(4)) - baseload
-heatgrad = slope2(1)
+        if length(daily_temp_ts.Data) ~= 24
+            % disp([datestr(datenum_index), ' temp ts length ', num2str(length(daily_temp_ts.Data))])
+        else
+            pristine_temperature_data = [pristine_temperature_data daily_temp_ts.Data'];
+        end
 
-if(slope2(2)>slope2(3))
-    coolgrad = slope2(2)
-    ac = point2(1)
-else
-    coolgrad = slope2(3)
-    ac = point2(3)
+        datenum_index = addtodate(datenum_index, 1, 'day');
+    end
+
+    %%
+    % Parse data with the three-line model
+    X = [pristine_demand_data; pristine_temperature_data];
+
+    [tenth_pct_points, tenth_pct_slopes] = threel(X,10);
+    [fiftieth_pct_points, fiftieth_pct_slopes] = threel(X,50);
+    [ninetieth_pct_points, ninetieth_pct_slopes] = threel(X,90);
+
+    baseload = min(tenth_pct_points(2),tenth_pct_points(4));
+    actload = min(ninetieth_pct_points(2),ninetieth_pct_points(4)) - baseload;
+    heatgrad = ninetieth_pct_slopes(1);
+
+    if(ninetieth_pct_slopes(2)>ninetieth_pct_slopes(3))
+        coolgrad = ninetieth_pct_slopes(2);
+        ac = ninetieth_pct_points(1);
+    else
+        coolgrad = ninetieth_pct_slopes(3);
+        ac = ninetieth_pct_points(3);
+    end
+
+    %%
+    % Find coordinates of the three-line model
+
+    % Tenth percentile line
+    tenth_pct_xvals = ...
+        [min(pristine_temperature_data) tenth_pct_points(1) tenth_pct_points(3) max(pristine_temperature_data)];
+
+    tenth_pct_start_pnt = tenth_pct_points(2) - ...
+        tenth_pct_slopes(1)*(tenth_pct_points(1)-min(pristine_temperature_data));
+    tenth_pct_end_pnt = tenth_pct_points(4) + ...
+        tenth_pct_slopes(3)*(max(pristine_temperature_data)-tenth_pct_points(3));
+    tenth_pct_yvals = [tenth_pct_start_pnt tenth_pct_points(2) tenth_pct_points(4) tenth_pct_end_pnt];
+
+    % Fiftieth percentil line
+    fiftieth_pct_xvals = ...
+        [min(pristine_temperature_data) fiftieth_pct_points(1) fiftieth_pct_points(3) max(pristine_temperature_data)];
+
+    fiftieth_pct_start_pnt = fiftieth_pct_points(2) - ...
+        fiftieth_pct_slopes(1)*(fiftieth_pct_points(1)-min(pristine_temperature_data));
+    fiftieth_pct_end_pnt = fiftieth_pct_points(4) + ...
+        fiftieth_pct_slopes(3)*(max(pristine_temperature_data)-fiftieth_pct_points(3));
+    fiftieth_pct_yvals = [fiftieth_pct_start_pnt fiftieth_pct_points(2) fiftieth_pct_points(4) fiftieth_pct_end_pnt];
+
+    % Ninetieth percentil line
+    ninetieth_pct_xvals = ...
+        [min(pristine_temperature_data) ninetieth_pct_points(1) ninetieth_pct_points(3) max(pristine_temperature_data)];
+
+    ninetieth_pct_start_pnt = ninetieth_pct_points(2) - ...
+        ninetieth_pct_slopes(1)*(ninetieth_pct_points(1)-min(pristine_temperature_data));
+    ninetieth_pct_end_pnt = ninetieth_pct_points(4) + ...
+        ninetieth_pct_slopes(3)*(max(pristine_temperature_data)-ninetieth_pct_points(3));
+    ninetieth_pct_yvals = [ninetieth_pct_start_pnt ninetieth_pct_points(2) ninetieth_pct_points(4) ninetieth_pct_end_pnt];
+
+    % Create figure
+    plot_title = ['Temperature Demand in Toronto Zone (', num2str(year), ')'];
+    figure('Name', plot_title);
+    hold on;
+
+    grid on;
+    three_line_axes = gca;
+    title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 16);
+    ylabel(three_line_axes, 'Demand in Toronto Zone (MW)');
+    xlabel(three_line_axes, 'External Temperature (Celsius)');
+    axis([-25 40 3000 12500]);
+
+    scatter(pristine_temperature_data, pristine_demand_data, 10, ...
+        'x', 'MarkerEdgeColor', [0 0 0], 'MarkerFaceColor', [0 0 0]);
+    plot(three_line_axes, tenth_pct_xvals, tenth_pct_yvals, '-mo', ...
+        'MarkerSize', 6, 'MarkerFaceColor', [0.17 0.61 0.22], ...
+        'Color', [0.17 0.61 0.22], 'LineWidth', 2);
+    plot(three_line_axes, fiftieth_pct_xvals, fiftieth_pct_yvals, '-mo', ...
+        'MarkerSize', 6, 'MarkerFaceColor', [0.59 0.24 0.17], ...
+        'Color', [0.59 0.24 0.17], 'LineWidth', 2);
+    plot(three_line_axes, ninetieth_pct_xvals, ninetieth_pct_yvals, '-mo', ...
+        'MarkerSize', 6, 'MarkerFaceColor', [0.19 0.22 0.60], ...
+        'Color', [0.19 0.22 0.60], 'LineWidth', 2);
+
+    legend(three_line_axes, 'Temperature Occurrence', '10th Percentile', ...
+        'Median Data', '90th Percentile', 'Location', 'NorthWest');
+    hold off;
 end
