@@ -2,15 +2,15 @@
 % Add folders to path.
 addpath('config', 'data-access', 'lib', 'three-line');
 
-for year=2004:2012
+for year=2004:2005
     %%
     % Set start/end and details about location to get demand and temperature
     % timeseries.
     
     % Calendar year
-    %start_datetime = strcat(num2str(year), '-01-01 00:00:00');
-    %end_datetime = strcat(num2str(year), '-12-31 23:59:59');
-    %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (', num2str(year), ')'];
+    start_datetime = strcat(num2str(year), '-01-01 00:00:00');
+    end_datetime = strcat(num2str(year), '-12-31 23:59:59');
+    plot_title = ['Electricity Demand in Southwest Zone vs. Kitchener Temperature (', num2str(year), ')'];
     
     % Summer Time-of-Use months
     %start_datetime = strcat(num2str(year), '-05-01 00:00:00');
@@ -18,12 +18,14 @@ for year=2004:2012
     %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Summer Time-of-Use ', num2str(year), ')'];
     
     % Winter Time-of-Use months (lower for loop end year by 1)
-    start_datetime = strcat(num2str(year), '-11-01 00:00:00');
-    end_datetime = strcat(num2str(year+1), '-04-30 23:59:59');
-    plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Winter Time-of-Use ', num2str(year),'-', num2str(year+1),')'];
+    %start_datetime = strcat(num2str(year), '-11-01 00:00:00');
+    %end_datetime = strcat(num2str(year+1), '-04-30 23:59:59');
+    %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Winter Time-of-Use ', num2str(year),'-', num2str(year+1),')'];
     
-    zone_col = 'toronto'; % Zone column name
-    location_id = 1; % Toronto
+    %zone_col = 'toronto'; % Zone column name
+    %location_id = 1; % Toronto
+    zone_col = 'southwest'; % Zone column name
+    location_id = 2; % Kitchener
     [ demand_ts, temperature_ts ] = ieso_query_zonal_demand_temp(... 
         zone_col, location_id, start_datetime, end_datetime);
 
@@ -117,7 +119,8 @@ for year=2004:2012
     title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
     ylabel(three_line_axes, 'Electricity Demand (MW)');
     xlabel(three_line_axes, 'Outdoor Temperature (Celsius)');
-    axis([-25 40 3000 12500]);
+    %axis([-25 40 3000 12500]); % Toronto
+    axis([-25 40 2000 6000]); % Southwest
 
     scatter(pristine_temperature_data, pristine_demand_data, 10, ...
         'x', 'MarkerEdgeColor', [0 0 0], 'MarkerFaceColor', [0 0 0]);
