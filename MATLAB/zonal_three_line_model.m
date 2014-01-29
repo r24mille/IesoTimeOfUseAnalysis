@@ -101,7 +101,7 @@ for year=2004:2013
 
     grid on;
     three_line_axes = gca;
-    title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 16);
+    title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
     ylabel(three_line_axes, 'Demand in Toronto Zone (MW)');
     xlabel(three_line_axes, 'External Temperature (Celsius)');
     axis([-25 40 3000 12500]);
