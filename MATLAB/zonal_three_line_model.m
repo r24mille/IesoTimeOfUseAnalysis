@@ -2,12 +2,26 @@
 % Add folders to path.
 addpath('config', 'data-access', 'lib', 'three-line');
 
-for year=2004:2013
+for year=2004:2012
     %%
     % Set start/end and details about location to get demand and temperature
     % timeseries.
-    start_datetime = strcat(num2str(year), '-01-01 00:00:00');
-    end_datetime = strcat(num2str(year), '-12-31 23:59:59');
+    
+    % Calendar year
+    %start_datetime = strcat(num2str(year), '-01-01 00:00:00');
+    %end_datetime = strcat(num2str(year), '-12-31 23:59:59');
+    %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (', num2str(year), ')'];
+    
+    % Summer Time-of-Use months
+    %start_datetime = strcat(num2str(year), '-05-01 00:00:00');
+    %end_datetime = strcat(num2str(year), '-10-31 23:59:59');
+    %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Summer Time-of-Use ', num2str(year), ')'];
+    
+    % Winter Time-of-Use months (lower for loop end year by 1)
+    start_datetime = strcat(num2str(year), '-11-01 00:00:00');
+    end_datetime = strcat(num2str(year+1), '-04-30 23:59:59');
+    plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Winter Time-of-Use ', num2str(year),'-', num2str(year+1),')'];
+    
     zone_col = 'toronto'; % Zone column name
     location_id = 1; % Toronto
     [ demand_ts, temperature_ts ] = ieso_query_zonal_demand_temp(... 
@@ -95,15 +109,14 @@ for year=2004:2013
     ninetieth_pct_yvals = [ninetieth_pct_start_pnt ninetieth_pct_points(2) ninetieth_pct_points(4) ninetieth_pct_end_pnt];
 
     % Create figure
-    plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (', num2str(year), ')'];
     figure('Name', plot_title);
     hold on;
 
     grid on;
     three_line_axes = gca;
     title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
-    ylabel(three_line_axes, 'Demand in Toronto Zone (MW)');
-    xlabel(three_line_axes, 'External Temperature (Celsius)');
+    ylabel(three_line_axes, 'Electricity Demand (MW)');
+    xlabel(three_line_axes, 'Outdoor Temperature (Celsius)');
     axis([-25 40 3000 12500]);
 
     scatter(pristine_temperature_data, pristine_demand_data, 10, ...
