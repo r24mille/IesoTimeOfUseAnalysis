@@ -1,16 +1,18 @@
 %%
 % Add folders to path.
 addpath('config', 'data-access', 'lib', 'three-line');
+ac_range = [];
+baseload_range = [];
 
-for year=2003:2003
+for year=2003:2013
     %%
     % Set start/end and details about location to get demand and temperature
     % timeseries.
     
     % Calendar year
-    %start_datetime = strcat(num2str(year), '-01-01 00:00:00');
-    %end_datetime = strcat(num2str(year), '-12-31 23:59:59');
-    %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (', num2str(year), ')'];
+    start_datetime = strcat(num2str(year), '-01-01 00:00:00');
+    end_datetime = strcat(num2str(year), '-12-31 23:59:59');
+    plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (', num2str(year), ')'];
     
     % Summer Time-of-Use months
     %start_datetime = strcat(num2str(year), '-05-01 00:00:00');
@@ -18,9 +20,9 @@ for year=2003:2003
     %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Summer Time-of-Use ', num2str(year), ')'];
     
     % Winter Time-of-Use months (lower for loop end year by 1)
-    start_datetime = strcat(num2str(year), '-11-01 00:00:00');
-    end_datetime = strcat(num2str(year+1), '-04-30 23:59:59');
-    plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Winter Time-of-Use ', num2str(year),'-', num2str(year+1),')'];
+    %start_datetime = strcat(num2str(year), '-11-01 00:00:00');
+    %end_datetime = strcat(num2str(year+1), '-04-30 23:59:59');
+    %plot_title = ['Electricity Demand vs. Temperature in Toronto Zone (Winter Time-of-Use ', num2str(year),'-', num2str(year+1),')'];
     
     zone_col = 'toronto'; % Zone column name
     location_id = 1; % Toronto
@@ -71,11 +73,13 @@ for year=2003:2003
 
     if(ninetieth_pct_slopes(2)>ninetieth_pct_slopes(3))
         coolgrad = ninetieth_pct_slopes(2);
-        ac = ninetieth_pct_points(1);
+        ac = ninetieth_pct_points(1)
     else
         coolgrad = ninetieth_pct_slopes(3);
-        ac = ninetieth_pct_points(3);
+        ac = ninetieth_pct_points(3)
     end
+    ac_range = [ac_range ac];
+    baseload_range = [baseload_range baseload];
 
     %%
     % Find coordinates of the three-line model
@@ -111,30 +115,30 @@ for year=2003:2003
     ninetieth_pct_yvals = [ninetieth_pct_start_pnt ninetieth_pct_points(2) ninetieth_pct_points(4) ninetieth_pct_end_pnt];
 
     % Create figure
-    figure('Name', plot_title);
-    hold on;
-
-    grid on;
-    three_line_axes = gca;
-    title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
-    ylabel(three_line_axes, 'Electricity Demand (MW)');
-    xlabel(three_line_axes, 'Outdoor Temperature (Celsius)');
-    axis([-25 40 3000 12500]); % Toronto
-    %axis([-25 40 2000 6000]); % Southwest
-
-    scatter(pristine_temperature_data, pristine_demand_data, 10, ...
-        'x', 'MarkerEdgeColor', [0 0 0], 'MarkerFaceColor', [0 0 0]);
-    plot(three_line_axes, tenth_pct_xvals, tenth_pct_yvals, '-mo', ...
-        'MarkerSize', 6, 'MarkerFaceColor', [0.17 0.61 0.22], ...
-        'Color', [0.17 0.61 0.22], 'LineWidth', 2);
-    plot(three_line_axes, fiftieth_pct_xvals, fiftieth_pct_yvals, '-mo', ...
-        'MarkerSize', 6, 'MarkerFaceColor', [0.59 0.24 0.17], ...
-        'Color', [0.59 0.24 0.17], 'LineWidth', 2);
-    plot(three_line_axes, ninetieth_pct_xvals, ninetieth_pct_yvals, '-mo', ...
-        'MarkerSize', 6, 'MarkerFaceColor', [0.19 0.22 0.60], ...
-        'Color', [0.19 0.22 0.60], 'LineWidth', 2);
-
-    legend(three_line_axes, 'Temperature Occurrence', '10th Percentile', ...
-        'Median Data', '90th Percentile', 'Location', 'NorthWest');
-    hold off;
+%     figure('Name', plot_title);
+%     hold on;
+% 
+%     grid on;
+%     three_line_axes = gca;
+%     title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
+%     ylabel(three_line_axes, 'Electricity Demand (MW)');
+%     xlabel(three_line_axes, 'Outdoor Temperature (Celsius)');
+%     axis([-25 40 3000 12500]); % Toronto
+%     %axis([-25 40 2000 6000]); % Southwest
+% 
+%     scatter(pristine_temperature_data, pristine_demand_data, 10, ...
+%         'x', 'MarkerEdgeColor', [0 0 0], 'MarkerFaceColor', [0 0 0]);
+%     plot(three_line_axes, tenth_pct_xvals, tenth_pct_yvals, '-mo', ...
+%         'MarkerSize', 6, 'MarkerFaceColor', [0.17 0.61 0.22], ...
+%         'Color', [0.17 0.61 0.22], 'LineWidth', 2);
+%     plot(three_line_axes, fiftieth_pct_xvals, fiftieth_pct_yvals, '-mo', ...
+%         'MarkerSize', 6, 'MarkerFaceColor', [0.59 0.24 0.17], ...
+%         'Color', [0.59 0.24 0.17], 'LineWidth', 2);
+%     plot(three_line_axes, ninetieth_pct_xvals, ninetieth_pct_yvals, '-mo', ...
+%         'MarkerSize', 6, 'MarkerFaceColor', [0.19 0.22 0.60], ...
+%         'Color', [0.19 0.22 0.60], 'LineWidth', 2);
+% 
+%     legend(three_line_axes, 'Temperature Occurrence', '10th Percentile', ...
+%         'Median Data', '90th Percentile', 'Location', 'NorthWest');
+%     hold off;
 end
