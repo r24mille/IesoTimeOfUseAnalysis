@@ -20,7 +20,7 @@ setdbprefs('FetchInBatches','no');
 
 %%
 % Add MySQL driver to classpath
-javaclasspath('lib/mysql-connector-java-5.1.27-bin.jar');
+javaclasspath('lib/mysql-connector-java-5.1.29-bin.jar');
 
 %Make connection to database.  Note that the password has been omitted.
 %Using JDBC driver.

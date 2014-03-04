@@ -27,7 +27,7 @@ setdbprefs('NullStringRead', 'null');
 
 %%
 % Add MySQL driver to classpath
-javaclasspath('lib/mysql-connector-java-5.1.27-bin.jar');
+javaclasspath('lib/mysql-connector-java-5.1.29-bin.jar');
 
 %Make connection to database.  Note that the password has been omitted.
 %Using JDBC driver.
@@ -51,7 +51,8 @@ curs = exec(conn, ['select '...
     start_datetime...
     ''' and observation_datetime_standard <= '''...
     end_datetime...
-    ''' order by wo.observation_datetime_standard asc']);
+    ''' and wo.temp_metric > -100 and wo.temp_metric < 100 '...
+    'order by wo.observation_datetime_standard asc']);
 
 curs = fetch(curs);
 sql_results = curs.Data;
