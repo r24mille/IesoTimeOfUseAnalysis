@@ -41,25 +41,18 @@ for year=2003:2013
     [median_fit_points, median_fit_slopes] = threel(X,50);
     [ninetieth_pct_points, ninetieth_pct_slopes] = threel(X,90);
 
-    baseload = min(tenth_pct_points(2),tenth_pct_points(4));
-    actload = min(ninetieth_pct_points(2),ninetieth_pct_points(4)) - baseload;
-    heatgrad = ninetieth_pct_slopes(1);
-
-    % Build a matrix of AC setpoints and baseload setpoints as a function
-    % of year
-    if(ninetieth_pct_slopes(2)>ninetieth_pct_slopes(3))
+    % If slow of second segment is greater than last segment,
+    % then use the first point as the AC setpoint.
+    if(ninetieth_pct_slopes(2) > ninetieth_pct_slopes(3))
         ac = ninetieth_pct_points(1);
     else
+        % The point that _should_ be used as the AC setpoint
         ac = ninetieth_pct_points(3);
     end
     ac_setpoints_annually = [ac_setpoints_annually; [year ac]];
     
-    if(tenth_pct_slopes(2)>tenth_pct_slopes(3))
-        baseload = tenth_pct_points(2);
-    else
-        baseload = tenth_pct_points(4);
-    end
-    
+    % Use the lower of the two 10th percentile points as baseload
+    baseload = min(tenth_pct_points(2),tenth_pct_points(4));
     baseload_annually = [baseload_annually; [year baseload]];
 
     %%
@@ -141,7 +134,7 @@ ac_setpoint_axes = gca;
 title(ac_setpoint_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
 ylabel(ac_setpoint_axes, 'Demand (MW)');
 xlabel(ac_setpoint_axes, 'Year');
-
+axis([2003 2013 3500 4500]);
 plot(baseload_annually(:,1), baseload_annually(:,2), '-mo', ...
         'MarkerSize', 3, 'MarkerFaceColor', [0.17 0.61 0.22], ...
         'MarkerEdgeColor', [0.02 0.46 0.07], ...
