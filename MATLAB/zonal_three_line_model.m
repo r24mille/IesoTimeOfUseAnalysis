@@ -3,11 +3,14 @@
 addpath('config', 'data-access', 'lib', 'three-line');
 ac_setpoints_annually = [];
 baseload_annually = [];
+start_year = 2003;
+end_year = 2013;
 zone_name = 'Toronto';
 location_id = 1;
 
 % Create figure
-plot_title = [zone_name ' Zone: Electricity Demand as a Function of Temperature' ];
+plot_title = [zone_name ' Zone: Three-Line Model (' ...
+    num2str(start_year) '-' num2str(end_year) ')'];
 figure('Name', plot_title);
 hold on;
 
@@ -19,7 +22,7 @@ xlabel(three_line_axes, 'Outdoor Temperature (Celsius)');
 axis([-25 40 3000 12500]); % Toronto
 %axis([-25 40 2000 6000]); % Southwest
 
-for year=2003:2013
+for year=start_year:end_year
     %%
     % Set start/end and details about location to get demand and temperature
     % timeseries.
@@ -117,9 +120,10 @@ hold off;
 
 %%
 % Plot AC setpoint as a function of year
-setpoint_title = [zone_name ' Zone: Outdoor Temperature at which Air Conditioning is Used Over Time'];
+setpoint_title = [zone_name ' Zone: Outdoor Temperature at which Air Conditioning is Used'];
 figure('Name', setpoint_title);
 hold on;
+grid on;
 [ac_setpoint_axes, ac_handle_1, ac_handle_2] = plotyy(ac_setpoints_annually(:,1), ac_setpoints_annually(:,2), ...
         ac_setpoints_annually(:,1), ac_setpoints_annually(:,3));
 %     , '-mo', ...
@@ -161,7 +165,7 @@ hold off;
 baseline_title = [zone_name ' Zone: Baseload Over Time'];
 figure('Name', baseline_title);
 hold on;
-hold on;
+grid on;
 baseload_axes = gca;
 title(baseload_axes, baseline_title, 'FontWeight', 'bold', 'FontSize', 14);
 ylabel(baseload_axes, 'Demand (MW)');
