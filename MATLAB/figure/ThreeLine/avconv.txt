@@ -1,1 +1,0 @@
-avconv -f image2 -r 1 -i ./year-%02d.png -vcodec qtrle out.mov
