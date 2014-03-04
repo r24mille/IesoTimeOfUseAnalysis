@@ -18,10 +18,6 @@ setdbprefs('NullNumberRead', 'NaN');
 setdbprefs('NullStringRead', 'null');
 setdbprefs('FetchInBatches','no');
 
-%%
-% Add MySQL driver to classpath
-javaclasspath('lib/mysql-connector-java-5.1.29-bin.jar');
-
 %Make connection to database.  Note that the password has been omitted.
 %Using JDBC driver.
 conn = database(schema, username, password, 'Vendor',...

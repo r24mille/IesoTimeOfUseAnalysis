@@ -6,6 +6,13 @@ function [ host, port, username, password ] = db_cred_example( schema )
 %   This file is intended to be copied to db-config.m and the function
 %   renamed to db-config. Then fill it out with connection information
 %   relevant to your database.
+
+%%
+% Add MySQL driver to classpath
+javaclasspath('lib/mysql-connector-java-5.1.29-bin.jar');
+
+%%
+% Configure database credentials
 host = 'DB_HOST';
 port = 3306;
 username = 'DB_USERNAME';
