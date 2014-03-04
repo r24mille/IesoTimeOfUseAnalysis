@@ -25,7 +25,8 @@ max_number_section2_temperatures = 10;
 
 % Ensure matrix does not contain character values and that data is
 % comprised of 24-hour days.
-if ~ischar(X) && mod(length(X(1,:)), 24) == 0
+% if ~ischar(X) && mod(length(X(1,:)), 24) == 0
+if ~ischar(X)
     % Split matrix into vectors of energy and temperature values
     demands = X(1,:);
     temperatures = X(2,:);
@@ -37,8 +38,6 @@ if ~ischar(X) && mod(length(X(1,:)), 24) == 0
     temperature_range = zeros(max(integer_temperatures) - min(integer_temperatures) + 1, 1);
     percentile_temperature_range = zeros(max(integer_temperatures) - min(integer_temperatures) + 1, 1);
     
-    % temperature_range and percentile_temperature_range are redefined to
-    % contain only temperatures with 20+ samples
     number_bins = 0;
     for j=min(integer_temperatures):max(integer_temperatures)
         % Include all temperature bins with at least 20 data points
@@ -48,6 +47,9 @@ if ~ischar(X) && mod(length(X(1,:)), 24) == 0
             percentile_temperature_range(number_bins,1) = prctile(demands(logical(integer_temperatures==j)),pct);
         end
     end
+    
+    % temperature_range and percentile_temperature_range are redefined to
+    % contain only temperatures with 20+ samples
     temperature_range = temperature_range(1:number_bins,1);
     percentile_temperature_range = percentile_temperature_range(1:number_bins,1);
     
