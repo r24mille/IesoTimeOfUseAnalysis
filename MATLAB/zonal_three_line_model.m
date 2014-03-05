@@ -5,8 +5,26 @@ ac_setpoints_annually = [];
 baseload_annually = [];
 start_year = 2003;
 end_year = 2013;
-zone_name = 'Toronto';
-location_id = 1;
+
+% zone_name = 'Southwest';
+% location_id = 2;
+% zone_name = 'West';
+% location_id = 13;
+
+%%% Problematic %%%
+% zone_name = 'Ottawa';
+% location_id = 5;
+% zone_name = 'Niagara';
+% location_id = 6;
+
+% zone_name = 'Bruce';
+% location_id = 7;
+% zone_name = 'Essa';
+% location_id = 8;
+% zone_name = 'Northeast';
+% location_id = 9;
+zone_name = 'Northwest';
+location_id = 10;
 
 % Create figure
 plot_title = [zone_name ' Zone: Three-Line Model (' ...
@@ -19,8 +37,8 @@ three_line_axes = gca;
 title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
 ylabel(three_line_axes, 'Electricity Demand (MW)');
 xlabel(three_line_axes, 'Outdoor Temperature (Celsius)');
-axis([-25 40 3000 12500]); % Toronto
-%axis([-25 40 2000 6000]); % Southwest
+%axis([-35 40 3500 12500]); % Toronto
+axis([-35 40 0 5000]); % West, Bruce, Essa, Northeast
 
 for year=start_year:end_year
     %%
@@ -121,15 +139,11 @@ hold off;
 %%
 % Plot AC setpoint as a function of year
 setpoint_title = [zone_name ' Zone: Outdoor Temperature at which Air Conditioning is Used'];
-figure('Name', setpoint_title);
+figure('Name', setpoint_title, 'Position', [100, 100, 700, 400]);
 hold on;
 grid on;
 [ac_setpoint_axes, ac_handle_1, ac_handle_2] = plotyy(ac_setpoints_annually(:,1), ac_setpoints_annually(:,2), ...
         ac_setpoints_annually(:,1), ac_setpoints_annually(:,3));
-%     , '-mo', ...
-%         'MarkerSize', 3, 'MarkerFaceColor', [0.19 0.22 0.60], ...
-%         'MarkerEdgeColor', [0.04 0.07 0.45], ...
-%         'Color', [0.19 0.22 0.60], 'LineWidth', 1
 title(setpoint_title, 'FontWeight', 'bold', 'FontSize', 14);
 
 set(get(ac_setpoint_axes(1),'Ylabel'),'String', 'AC Setpoint Temperature (Celsius)');
@@ -152,25 +166,36 @@ set(ac_handle_2, 'LineStyle', '-', ...
     'LineWidth', 1);
 xlabel('Year');
 linkaxes(ac_setpoint_axes, 'y');
+
+% All other zones
+% set(ac_setpoint_axes,'XTick', [2003:1:2013], ...
+%     'XLim', [2003 2013], ...
+%     'YTick', [12:1:25], ...
+%     'YLim', [12 25]);
+
+% Bruce, Northeast, Northwest
 set(ac_setpoint_axes,'XTick', [2003:1:2013], ...
     'XLim', [2003 2013], ...
-    'YTick', [12:1:25], ...
-    'YLim', [12 25]);
+    'YTick', [5:1:25], ...
+    'YLim', [5 25]);
+
 legend([ac_handle_1; ac_handle_2], 'AC Setpoint', 'Mean Summer Temp', ...
-    'Location', 'NorthWest');
+    'Location', 'SouthWest');
 hold off;
 
 %%
 % Plot baseload as a function of year
 baseline_title = [zone_name ' Zone: Baseload Over Time'];
-figure('Name', baseline_title);
+figure('Name', baseline_title, 'Position', [100, 100, 700, 400]);
 hold on;
 grid on;
 baseload_axes = gca;
 title(baseload_axes, baseline_title, 'FontWeight', 'bold', 'FontSize', 14);
 ylabel(baseload_axes, 'Demand (MW)');
 xlabel(baseload_axes, 'Year');
-axis([2003 2013 3500 4500]);
+% axis([2003 2013 1000 2000]); % West
+axis([2003 2013 0 1000]); % Bruce, Essa, Northwest
+% axis([2003 2013 500 1500]); % Northeast
 plot(baseload_annually(:,1), baseload_annually(:,2), '-mo', ...
         'MarkerSize', 3, 'MarkerFaceColor', [0.17 0.61 0.22], ...
         'MarkerEdgeColor', [0.02 0.46 0.07], ...
