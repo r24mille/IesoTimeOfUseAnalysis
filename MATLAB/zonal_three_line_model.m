@@ -7,8 +7,8 @@ start_year = 2003;
 end_year = 2013;
 
 
-% zone_name = 'West';
-% location_id = 13;
+zone_name = 'West';
+location_id = 13;
 % zone_name = 'Southwest';
 % location_id = 2;
 % zone_name = 'Bruce';
@@ -28,8 +28,8 @@ end_year = 2013;
 % location_id = 8;
 % zone_name = 'Northeast';
 % location_id = 9;
-zone_name = 'Northwest';
-location_id = 10;
+% zone_name = 'Northwest';
+% location_id = 10;
 
 % Create figure
 plot_title = [zone_name ' Zone: Three-Line Model (' ...
@@ -201,8 +201,8 @@ ylabel(baseload_axes, 'Demand (MW)');
 xlabel(baseload_axes, 'Year');
 % axis([2003 2013 3500 4500]); % Toronto
 % axis([2003 2013 2000 3000]); % Southwest
-% axis([2003 2013 1000 2000]); % West
-axis([2003 2013 0 1000]); % Bruce, East, Essa, Niagara, Northwest
+axis([2003 2013 1000 2000]); % West
+% axis([2003 2013 0 1000]); % Bruce, East, Essa, Niagara, Northwest
 % axis([2003 2013 500 1500]); % Northeast
 plot(baseload_annually(:,1), baseload_annually(:,2), '-mo', ...
         'MarkerSize', 3, 'MarkerFaceColor', [0.17 0.61 0.22], ...
