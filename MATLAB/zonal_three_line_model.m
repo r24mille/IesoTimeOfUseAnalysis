@@ -6,27 +6,30 @@ baseload_annually = [];
 start_year = 2003;
 end_year = 2013;
 
-% zone_name = 'Toronto';
-% location_id = 1;
-zone_name = 'Southwest';
-location_id = 2;
+
 % zone_name = 'West';
 % location_id = 13;
+% zone_name = 'Southwest';
+% location_id = 2;
+% zone_name = 'Bruce';
+% location_id = 7;
+% zone_name = 'Niagara';
+% location_id = 6;
+% zone_name = 'Toronto';
+% location_id = 1;
+% zone_name = 'East';
+% location_id = 3;
 
 %%% Problematic %%%
 % zone_name = 'Ottawa';
 % location_id = 5;
 
-% zone_name = 'Niagara';
-% location_id = 6;
-% zone_name = 'Bruce';
-% location_id = 7;
 % zone_name = 'Essa';
 % location_id = 8;
 % zone_name = 'Northeast';
 % location_id = 9;
-% zone_name = 'Northwest';
-% location_id = 10;
+zone_name = 'Northwest';
+location_id = 10;
 
 % Create figure
 plot_title = [zone_name ' Zone: Three-Line Model (' ...
@@ -40,8 +43,8 @@ title(three_line_axes, plot_title, 'FontWeight', 'bold', 'FontSize', 14);
 ylabel(three_line_axes, 'Electricity Demand (MW)');
 xlabel(three_line_axes, 'Outdoor Temperature (Celsius)');
 % axis([-35 40 3500 12500]); % Toronto
-axis([-35 40 1000 6000]); % Southwest
-% axis([-35 40 0 5000]); % West, Bruce, Essa, Northeast
+% axis([-35 40 1000 6000]); % Southwest
+axis([-35 40 0 5000]); % West, Bruce, Niagara, East, Essa, Northeast
 
 for year=start_year:end_year
     %%
@@ -197,9 +200,9 @@ title(baseload_axes, baseline_title, 'FontWeight', 'bold', 'FontSize', 14);
 ylabel(baseload_axes, 'Demand (MW)');
 xlabel(baseload_axes, 'Year');
 % axis([2003 2013 3500 4500]); % Toronto
-axis([2003 2013 2000 3000]); % Southwest
+% axis([2003 2013 2000 3000]); % Southwest
 % axis([2003 2013 1000 2000]); % West
-% axis([2003 2013 0 1000]); % Bruce, Essa, Northwest
+axis([2003 2013 0 1000]); % Bruce, East, Essa, Niagara, Northwest
 % axis([2003 2013 500 1500]); % Northeast
 plot(baseload_annually(:,1), baseload_annually(:,2), '-mo', ...
         'MarkerSize', 3, 'MarkerFaceColor', [0.17 0.61 0.22], ...
